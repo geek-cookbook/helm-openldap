@@ -50,6 +50,19 @@ spec:
         resources:
 {{ toYaml .Values.initResources | indent 10 }}
       {{- end }}
+      {{- if .Values.customSchemaFiles }}
+      - name: {{ .Chart.Name }}-init-schema
+        image: busybox
+        command: ['sh', '-c', 'cp /customschema/* /schemaworkingdir']
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - name: customschema
+          mountPath: /customschema
+        - name: schemaworkingdir
+          mountPath: /schemaworkingdir
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
+      {{- end }}
       {{- if .Values.tls.enabled }}
       - name: {{ .Chart.Name }}-init-tls
         image: busybox
@@ -103,6 +116,10 @@ spec:
             - name: ldifworkingdir
               mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
             {{- end }}
+            {{- if .Values.customSchemaFiles }}
+            - name: schemaworkingdir
+              mountPath: /container/service/slapd/assets/config/bootstrap/schema/custom
+            {{- end }}            
             {{- if .Values.tls.enabled }}
             - name: certs
               mountPath: /container/service/slapd/assets/certs
@@ -152,6 +169,13 @@ spec:
         - name: ldifworkingdir
           emptyDir: {}
         {{- end }}
+        {{- if .Values.customSchemaFiles }}
+        - name: customschema
+          configMap:
+            name: {{ template "openldap.fullname" . }}-customschema
+        - name: schemaworkingdir
+          emptyDir: {}
+        {{- end }}        
         {{- if .Values.tls.enabled }}
         - name: tls
           secret:

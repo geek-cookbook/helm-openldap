@@ -71,6 +71,9 @@ env:
 # customLdifFiles:
   # 01-default-users.ldif: |-
     # Predefine users here
+# customSchemaFiles:
+  # 01-postfix-book.schema: |-
+    # Paste schema here - an example is found at https://github.com/tomav/docker-mailserver/blob/master/test/docker-openldap/bootstrap/schema/mmc/postfix-book.schema   
 
 ## Persist data to a persistent volume
 persistence:
