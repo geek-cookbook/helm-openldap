@@ -118,7 +118,7 @@ spec:
             {{- end }}
             {{- if .Values.customSchemaFiles }}
             - name: schemaworkingdir
-              mountPath: /container/service/slapd/assets/config/bootstrap/schema/custom
+              mountPath: /container/service/slapd/assets/config/bootstrap/schema
             {{- end }}            
             {{- if .Values.tls.enabled }}
             - name: certs
