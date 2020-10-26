@@ -3,6 +3,25 @@ entries:
   openldap:
   - apiVersion: v1
     appVersion: 2.4.50
+    created: "2020-10-26T20:34:11.287575483Z"
+    description: Community developed LDAP software
+    digest: 20301aa6e049c9f2a0a683a4100b7780624fd920e0912cdf93872ab59bf0dbf7
+    home: https://www.openldap.org
+    icon: http://www.openldap.org/images/headers/LDAPworm.gif
+    keywords:
+    - ldap
+    - openldap
+    maintainers:
+    - email: enis@apache.org
+      name: enis
+    name: openldap
+    sources:
+    - https://github.com/kubernetes/charts
+    urls:
+    - https://github.com/geek-cookbook/helm-openldap/releases/download/openldap-1.2.9/openldap-1.2.9.tgz
+    version: 1.2.9
+  - apiVersion: v1
+    appVersion: 2.4.50
     created: "2020-10-26T20:31:08.052621245Z"
     description: Community developed LDAP software
     digest: a57d94d1de7d071af68e6eaa05e79545c9cb7d906c5f944c3b95ec2dbcd0b267
