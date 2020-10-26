@@ -189,11 +189,7 @@ spec:
             secretName: {{ .Values.tls.CA.secret }}
         {{- end }}
         {{- end }}
-        - name: certs
-        {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "openldap.fullname" .) }}
-        {{- else }}   
+        - name: certs 
           emptyDir:
             medium: Memory
         {{- end }}
