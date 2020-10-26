@@ -92,8 +92,11 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- if .Values.customLdifFiles }}
-          args: [--copy-service]
+          args:
+            - -l
+            - {{ .Values.logLevel }}
+{{- if .Values.customLdifFiles }}            
+            - --copy-service            
 {{- end }}
           ports:
             - name: ldap-port
@@ -187,8 +190,13 @@ spec:
         {{- end }}
         {{- end }}
         - name: certs
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "openldap.fullname" .) }}
+        {{- else }}        
           emptyDir:
             medium: Memory
+        {{- end -}}
         - name: data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

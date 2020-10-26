@@ -19,7 +19,7 @@ strategy: {}
 image:
   # From repository https://github.com/osixia/docker-openldap
   repository: osixia/openldap
-  tag: 1.2.4
+  tag: 1.4.0
   pullPolicy: IfNotPresent
 
 # Spcifies an existing secret to be used for admin and config user passwords
@@ -32,6 +32,16 @@ tls:
   CA:
     enabled: false
     secret: ""  # The name of a generic secret to use for custom CA certificate (ca.crt)
+
+  # Whether to enable persistence for certificate storage. When set to false, all certs will be stored
+  # in an emptyDir in memory - when true, they'll persist to storage. This can be handy in environments
+  # where persistence of data (i.e. the DH certs produced on first container start) is of higher priority
+  # than persisting access to sensitive data. (I.e., perhaps you are encrypting your underlying storage)
+  persistence:
+    enabled: false
+    accessMode: ReadWriteOnce
+    size: 1Gi
+
 ## Add additional labels to all resources
 extraLabels: {}
 ## Add additional annotations to pods
@@ -115,3 +125,7 @@ test:
   image:
     repository: dduportal/bats
     tag: 0.4.0
+
+# Set the container log level
+# Valid log levels: none, error, warning, info (default), debug, trace
+logLevel: info
