@@ -3,6 +3,25 @@ entries:
   openldap:
   - apiVersion: v1
     appVersion: 1.5.0
+    created: "2022-05-19T22:51:13.752105171Z"
+    description: Community developed LDAP software
+    digest: a414174bf251883baba7ba99a8002da04f85f20e69cc754abe5efcf0534e5881
+    home: https://github.com/osixia/docker-openldap
+    icon: http://www.openldap.org/images/headers/LDAPworm.gif
+    keywords:
+    - ldap
+    - openldap
+    maintainers:
+    - email: davidy@funkypenguin.co.nz
+      name: funkypenguin
+    name: openldap
+    sources:
+    - https://github.com/kubernetes/charts
+    urls:
+    - https://github.com/geek-cookbook/helm-openldap/releases/download/openldap-2.0.0-pre-03/openldap-2.0.0-pre-03.tgz
+    version: 2.0.0-pre-03
+  - apiVersion: v1
+    appVersion: 1.5.0
     created: "2022-05-19T22:31:14.19442564Z"
     description: Community developed LDAP software
     digest: f954b7258de6b7edd436f964756e5d91feb2b6107f6ea1e40f0dd6fd381f5469
