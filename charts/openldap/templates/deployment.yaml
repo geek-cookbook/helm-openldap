@@ -23,6 +23,10 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/configmap-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
+{{- if .Values.customLdifFiles}}
+        checksum/configmap-customldif: {{ include (print $.Template.BasePath "/configmap-customldif.yaml") . | sha256sum }}
+{{- end }}
 {{- if .Values.podAnnotations}}
 {{ toYaml .Values.podAnnotations | indent 8}}
 {{- end }}
@@ -30,10 +34,8 @@ spec:
         app.kubernetes.io/name: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
     spec:
-      {{- if or .Values.customLdifFiles .Values.tls.enabled }}
+      {{- if .Values.tls.enabled }}
       initContainers:
-      {{- end }}
-      {{- if .Values.customLdifFiles }}
       - name: {{ .Chart.Name }}-init-tls
         image: busybox
         command: ['sh', '-c', 'cp /tls/* /certs']
@@ -69,9 +71,9 @@ spec:
             - --copy-service
 {{- end }}
           ports:
-            - name: tcp-ldap
+            - name: ldap-port
               containerPort: 389
-            - name: tcp-ldaps
+            - name: ssl-ldap-port
               containerPort: 636
           envFrom:
             - configMapRef:
@@ -139,10 +141,12 @@ spec:
         - name: customldif
           configMap:
             name: {{ template "openldap.fullname" . }}-customldif
+        {{- end }}
         {{- if .Values.customSchemaFiles }}
         - name: customschema
           configMap:
             name: {{ template "openldap.fullname" . }}-customschema
+        {{- end }}         
         {{- if .Values.tls.enabled }}
         - name: tls
           secret:
