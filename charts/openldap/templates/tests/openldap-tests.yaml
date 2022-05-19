@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "openldap.fullname" . }}-tests
   labels:
-    app: {{ template "openldap.name" . }}
+    app.kubernetes.io/name: {{ template "openldap.name" . }}
     chart: {{ template "openldap.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

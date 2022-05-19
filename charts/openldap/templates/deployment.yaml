@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name:  {{ template "openldap.fullname" . }}
   labels:
-    app: {{ template "openldap.name" . }}
+    app.kubernetes.io/name: {{ template "openldap.name" . }}
     chart: {{ template "openldap.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -18,52 +18,22 @@ spec:
 {{- end }}
   selector:
     matchLabels:
-      app: {{ template "openldap.name" . }}
+      app.kubernetes.io/name: {{ template "openldap.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
-        checksum/configmap-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
-{{- if .Values.customLdifFiles}}
-        checksum/configmap-customldif: {{ include (print $.Template.BasePath "/configmap-customldif.yaml") . | sha256sum }}
-{{- end }}
 {{- if .Values.podAnnotations}}
 {{ toYaml .Values.podAnnotations | indent 8}}
 {{- end }}
       labels:
-        app: {{ template "openldap.name" . }}
+        app.kubernetes.io/name: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
     spec:
       {{- if or .Values.customLdifFiles .Values.tls.enabled }}
       initContainers:
       {{- end }}
       {{- if .Values.customLdifFiles }}
-      - name: {{ .Chart.Name }}-init-ldif
-        image: busybox
-        command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        volumeMounts:
-        - name: customldif
-          mountPath: /customldif
-        - name: ldifworkingdir
-          mountPath: /ldifworkingdir
-        resources:
-{{ toYaml .Values.initResources | indent 10 }}
-      {{- end }}
-      {{- if .Values.customSchemaFiles }}
-      - name: {{ .Chart.Name }}-init-schema
-        image: busybox
-        command: ['sh', '-c', 'cp /customschema/* /schemaworkingdir']
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        volumeMounts:
-        - name: customschema
-          mountPath: /customschema
-        - name: schemaworkingdir
-          mountPath: /schemaworkingdir
-        resources:
-{{ toYaml .Values.initResources | indent 10 }}
-      {{- end }}
-            {{- if .Values.tls.enabled }}
       - name: {{ .Chart.Name }}-init-tls
         image: busybox
         command: ['sh', '-c', 'cp /tls/* /certs']
@@ -99,9 +69,9 @@ spec:
             - --copy-service
 {{- end }}
           ports:
-            - name: ldap-port
+            - name: tcp-ldap
               containerPort: 389
-            - name: ssl-ldap-port
+            - name: tcp-ldaps
               containerPort: 636
           envFrom:
             - configMapRef:
@@ -116,12 +86,12 @@ spec:
               mountPath: /etc/ldap/slapd.d
               subPath: config-data
             {{- if .Values.customLdifFiles }}
-            - name: ldifworkingdir
-              mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
+            - name: customldif
+              mountPath: /custom_ldifs
             {{- end }}
             {{- if .Values.customSchemaFiles }}
-            - name: schemaworkingdir
-              mountPath: /container/service/slapd/assets/config/bootstrap/schema
+            - name: customschema
+              mountPath: /custom_schemas
             {{- end }}  
             {{- if .Values.tls.enabled }}
             - name: certs
@@ -169,16 +139,10 @@ spec:
         - name: customldif
           configMap:
             name: {{ template "openldap.fullname" . }}-customldif
-        - name: ldifworkingdir
-          emptyDir: {}
-        {{- end }}
         {{- if .Values.customSchemaFiles }}
         - name: customschema
           configMap:
             name: {{ template "openldap.fullname" . }}-customschema
-        - name: schemaworkingdir
-          emptyDir: {}
-        {{- end }}         
         {{- if .Values.tls.enabled }}
         - name: tls
           secret:
