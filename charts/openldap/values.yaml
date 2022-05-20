@@ -56,7 +56,7 @@ service:
 env:
   LDAP_ORGANISATION: "Example Inc."
   LDAP_DOMAIN: "example.org"
-  LDAP_BACKEND: "hdb"
+  LDAP_BACKEND: "mdb"
   LDAP_TLS: "true"
   LDAP_TLS_ENFORCE: "false"
   LDAP_REMOVE_CONFIG_AFTER_SETUP: "true"
