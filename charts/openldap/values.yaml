@@ -101,7 +101,7 @@ resources: {}
  #   cpu: "500m"
  #   memory: "512Mi"
 
-initContainer:
+initContainers:
   image:
     repository: busybox
     tag: latest
