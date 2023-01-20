@@ -39,7 +39,7 @@ spec:
       {{- if .Values.tls.enabled }}
       initContainers:
       - name: {{ .Chart.Name }}-init-tls
-        image: {{ .Values.initContainers.image.repository }}:{{ .Values.initContainers.image.tag }}
+        image: "{{ .Values.initContainers.image.repository }}:{{ .Values.initContainers.image.tag }}"
         command: ['sh', '-c', 'cp /tls/* /certs']
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
@@ -51,7 +51,7 @@ spec:
 {{ toYaml .Values.initResources | indent 10 }}
       {{- if .Values.tls.CA.enabled }}
       - name: {{ .Chart.Name }}-init-catls
-        image: {{ .Values.initContainers.image.repository }}:{{ .Values.initContainers.image.tag }}
+        image: "{{ .Values.initContainers.image.repository }}:{{ .Values.initContainers.image.tag }}"
         command: ['sh', '-c', 'cp /catls/ca.crt /certs']
         volumeMounts:
           - name: catls
