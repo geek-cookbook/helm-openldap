@@ -101,6 +101,11 @@ resources: {}
  #   cpu: "500m"
  #   memory: "512Mi"
 
+initContainer:
+  image:
+    repository: busybox
+    tag: latest
+
 initResources: {}
  # requests:
  #   cpu: "100m"
@@ -125,3 +130,18 @@ test:
 # Set the container log level
 # Valid log levels: none, error, warning, info (default), debug, trace
 logLevel: info
+
+# openldap has to run as root in order to listen to ports 389 and 636
+podSecurityContext:
+  runAsUser: 0
+  runAsGroup: 0
+  runAsNonRoot: false 
+
+# openldap has to run as root in order to listen to ports 389 and 636, but we can drop capabilities and avoid escalation 
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  capabilities:
+    drop:
+    - ALL

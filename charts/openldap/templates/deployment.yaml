@@ -34,10 +34,12 @@ spec:
         app.kubernetes.io/name: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
       {{- if .Values.tls.enabled }}
       initContainers:
       - name: {{ .Chart.Name }}-init-tls
-        image: busybox
+        image: {{ .Values.initContainers.image.repository }}:{{ .Values.initContainers.image.tag }}
         command: ['sh', '-c', 'cp /tls/* /certs']
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
@@ -49,7 +51,7 @@ spec:
 {{ toYaml .Values.initResources | indent 10 }}
       {{- if .Values.tls.CA.enabled }}
       - name: {{ .Chart.Name }}-init-catls
-        image: busybox
+        image: {{ .Values.initContainers.image.repository }}:{{ .Values.initContainers.image.tag }}
         command: ['sh', '-c', 'cp /catls/ca.crt /certs']
         volumeMounts:
           - name: catls
@@ -124,6 +126,8 @@ spec:
             failureThreshold: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+        securityContext:
+{{ toYaml .Values.containerSecurityContext | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
