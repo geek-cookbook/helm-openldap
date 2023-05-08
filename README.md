@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the openldap chart and 
 | `resources`                        | Container resource requests and limits in yaml                                                                                            | `{}`                |
 | `initResources`                    | initContainer resource requests and limits in yaml                                                                                        | `{}`                |
 | `test.enabled`                     | Conditionally provision test resources                                                                                                    | `false`             |
-| `test.image.repository`            | Test container image requires bats framework                                                                                              | `dduportal/bats`    |
+| `test.image.repository`            | Test container image requires bats framework                                                                                              | `bats/bats`    |
 | `test.image.tag`                   | Test container tag                                                                                                                        | `0.4.0`             |
 
 
